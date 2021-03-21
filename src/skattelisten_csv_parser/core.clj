@@ -29,6 +29,5 @@
        line-seq
        (drop 1)
        (map convert)
-       (apply str)
        json/write-str
        (spit output-path)))

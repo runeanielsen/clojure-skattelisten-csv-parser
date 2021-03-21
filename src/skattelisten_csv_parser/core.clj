@@ -18,20 +18,16 @@
 (defn convert
   [csv-line]
   (->> (str/split csv-line #",")
-       create-company
-       json/write-str
-       (apply str ",")))
+       create-company))
 
 (defn -main
   [& args]
   (def input-path (nth args 0))
   (def output-path (nth args 1))
-  (spit output-path "[")
-  (spit output-path
-        (subs (->> input-path
-                   io/reader
-                   line-seq
-                   (drop 1)
-                   (map convert)
-                   (apply str)) 1) :append true)
-  (spit output-path "]" :append true))
+  (->> (json/write-str (->> input-path
+                            io/reader
+                            line-seq
+                            (drop 1)
+                            (map convert)
+                            (apply str)))
+       (spit output-path)))

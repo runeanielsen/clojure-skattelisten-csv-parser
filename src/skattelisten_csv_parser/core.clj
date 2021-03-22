@@ -22,12 +22,11 @@
 
 (defn -main
   [& args]
-  (def input-path (nth args 0))
-  (def output-path (nth args 1))
-  (->> input-path
-       io/reader
-       line-seq
-       (drop 1)
-       (map convert)
-       json/write-str
-       (spit output-path)))
+  (let [[input-path output-path] args]
+    (->> input-path
+         io/reader
+         line-seq
+         (drop 1)
+         (map convert)
+         json/write-str
+         (spit output-path))))

@@ -1,7 +1,7 @@
 (ns skattelisten-csv-parser.core
-  (:require [clojure.java.io :as io])
-  (:require [clojure.data.json :as json])
-  (:require [clojure.string :as str])
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]
+            [cheshire.core :as json])
   (:gen-class))
 
 (defn create-company
@@ -15,18 +15,14 @@
    :deficit (get splitted-line 9)
    :corporateTax (get splitted-line 10)})
 
-(defn convert
-  [csv-line]
-  (->> (str/split csv-line #",")
-       create-company))
-
 (defn -main
   [& args]
   (let [[input-path output-path] args]
-    (->> input-path
-         io/reader
-         line-seq
-         (drop 1)
-         (map convert)
-         json/write-str
-         (spit output-path))))
+    (json/generate-stream
+     (->> input-path
+          io/reader
+          line-seq
+          (drop 1)
+          (map #(->> (str/split % #",")
+                     create-company)))
+     (io/writer output-path))))

@@ -6,14 +6,14 @@
 
 (defn create-company
   [splitted-line]
-  {:csv (get splitted-line 0)
-   :name (get splitted-line 1)
-   :se (get splitted-line 2)
-   :incomeYear (get splitted-line 3)
-   :companyType (get splitted-line 5)
-   :taxableIncome (get splitted-line 8)
-   :deficit (get splitted-line 9)
-   :corporateTax (get splitted-line 10)})
+  {:csv (splitted-line 0)
+   :name (splitted-line 1)
+   :se (splitted-line 2)
+   :incomeYear (splitted-line 3)
+   :companyType (splitted-line 5)
+   :taxableIncome (splitted-line 8)
+   :deficit (splitted-line 9)
+   :corporateTax (splitted-line 10)})
 
 (defn -main
   [& args]

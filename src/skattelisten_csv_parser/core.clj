@@ -6,14 +6,14 @@
 
 (defn create-company
   [splitted-line]
-  {:csv (get splitted-line 0)
-   :name (get splitted-line 1)
-   :se (get splitted-line 2)
-   :income-year (get splitted-line 3)
-   :company-type (get splitted-line 5)
-   :taxable-income (get splitted-line 8)
-   :deficit (get splitted-line 9)
-   :corporate-tax (get splitted-line 10)})
+  {:csv (splitted-line 0)
+   :name (splitted-line 1)
+   :se (splitted-line 2)
+   :income-year (splitted-line 3)
+   :company-type (splitted-line 5)
+   :taxable-income (splitted-line 8)
+   :deficit (splitted-line 9)
+   :corporate-tax (splitted-line 10)})
 
 (defn -main [& args]
   (let [[input-path output-path] args]
@@ -27,4 +27,5 @@
                                 create-company
                                 json/write-str
                                 (str "\n"))))]
-        (.write writer t)))))
+        (.write writer t))))
+  (shutdown-agents))

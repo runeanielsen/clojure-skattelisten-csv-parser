@@ -4,7 +4,7 @@
             [clojure.data.json :as json])
   (:gen-class))
 
-(defn create-company
+(defn make-company
   [splitted-line]
   {:csv (splitted-line 0)
    :name (splitted-line 1)
@@ -15,17 +15,19 @@
    :deficit (splitted-line 9)
    :corporate-tax (splitted-line 10)})
 
+(defn csv-line->json-newline [line]
+  (-> line
+      (str/split #";")
+      make-company
+      (json/write-str :escape-unicode false)
+      (str "\n")))
+
+(defn process-file [input-path output-path]
+  (with-open [reader (io/reader input-path :buffer-size 4096)
+              writer (io/writer output-path :buffer-size 4096)]
+    (doseq [line (drop 1 (line-seq reader))]
+      (.write writer (csv-line->json-newline line)))))
+
 (defn -main [& args]
   (let [[input-path output-path] args]
-    (with-open [writer (io/writer output-path)]
-      (doseq [t (->> input-path
-                     io/reader
-                     line-seq
-                     (drop 1)
-                     (pmap #(-> %
-                                (str/split #",")
-                                create-company
-                                json/write-str
-                                (str "\n"))))]
-        (.write writer t))))
-  (shutdown-agents))
+    (process-file input-path output-path)))

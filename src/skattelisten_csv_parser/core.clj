@@ -15,19 +15,24 @@
    :deficit (splitted-line 9)
    :corporate-tax (splitted-line 10)})
 
-(defn csv-line->json-newline [line]
-  (-> line
-      (str/split #";")
-      make-company
-      (json/write-str :escape-unicode false)
-      (str "\n")))
+(defn map->json-new-line [m]
+  (str (json/write-str m :escape-unicode false) "\n"))
 
-(defn process-file [input-path output-path]
-  (with-open [reader (io/reader input-path :buffer-size 4096)
-              writer (io/writer output-path :buffer-size 4096)]
-    (doseq [line (drop 1 (line-seq reader))]
-      (.write writer (csv-line->json-newline line)))))
+(defn split-csv-line [line]
+  (str/split line #";"))
+
+(def csv-line->company-json-new-line
+  (comp
+   map->json-new-line
+   make-company
+   split-csv-line))
+
+(defn pmap-csv-file [fn in-file out-file]
+  (with-open [reader (io/reader in-file :buffer-size 4096)
+              writer (io/writer out-file :buffer-size 4096)]
+    (let [lines (drop 1 (line-seq reader))]
+      (dorun (map #(.write writer %) (pmap fn lines))))))
 
 (defn -main [& args]
   (let [[input-path output-path] args]
-    (process-file input-path output-path)))
+    (pmap-csv-file csv-line->company-json-new-line input-path output-path)))

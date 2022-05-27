@@ -4,7 +4,7 @@
             [clojure.data.json :as json])
   (:gen-class))
 
-(defn make-company
+(defn splitted-csv-line->company
   [splitted-line]
   {:csv (splitted-line 0)
    :name (splitted-line 1)
@@ -24,7 +24,7 @@
 (def csv-line->company-json-new-line
   (comp
    map->json-new-line
-   make-company
+   splitted-csv-line->company
    split-csv-line))
 
 (defn pmap-csv-file [fn in-file out-file]

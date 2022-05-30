@@ -33,6 +33,10 @@
     (let [lines (drop 1 (line-seq reader))]
       (dorun (map #(.write writer %) (pmap fn lines))))))
 
+(defn process-skattelisten [input-path output-path]
+  (pmap-csv-file csv-line->company-json-new-line input-path output-path))
+
 (defn -main [& args]
   (let [[input-path output-path] args]
-    (pmap-csv-file csv-line->company-json-new-line input-path output-path)))
+    (process-skattelisten input-path output-path))
+  (shutdown-agents))

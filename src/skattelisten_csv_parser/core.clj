@@ -16,7 +16,7 @@
    :corporate-tax (splitted-line 10)})
 
 (defn map->json-new-line [m]
-  (str (json/write-str m :escape-unicode false) "\n"))
+  (str (json/write-str m :escape-unicode false) \newline))
 
 (defn split-csv-line [line]
   (str/split line #";"))
